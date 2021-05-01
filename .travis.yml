@@ -34,7 +34,7 @@ after_success:
 
 # Config for deploy to AWS : http://multidockercomplex-env.eba-eyew3rtr.us-east-2.elasticbeanstalk.com/
 # App entry is taken from AWS Elastic beanstalkapplication name : multi-docker-complex
-# Env is taken from AWS app's environment : MultiDockerComplex-env
+# Env is taken from AWS app's environment : Multidockercomplex-env
 # AWS S3 bucketname
 # bucket_name is the AWS S3 bucket name for our elstic beanstalk
 # bucket_path is same as app name in AWS
@@ -44,7 +44,7 @@ deploy:
   provider:     elasticbeanstalk
   region:       "us-east-2"
   app:          "multi-docker-complex"
-  env:          "MultiDockerComplex-env"
+  env:          "Multidockercomplex-env"
   bucket_name:  "elasticbeanstalk-us-east-2-236818191254"
   bucket_path:  "multi-docker-complex"
   on:
