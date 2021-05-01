@@ -3,5 +3,5 @@ WORKDIR '/app'
 COPY ./package.json ./
 RUN npm install
 COPY . .
-# dev  here is from package.json in client folder where it is defiend as "react-scripts start"
+# start below is from package.json in client folder where it is defiend as "react-scripts start"
 CMD ["npm", "run", "start"]

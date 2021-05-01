@@ -20,7 +20,7 @@ services:
       - '3050:80'                   # localhost port : nginx port
 
 
-  api:                 #  <== Config details for express server functionality 
+  api:                 #  <== Config details for express server functionality. Matched with default.conf
     depends_on: 
       - postgres
     build: 
@@ -39,7 +39,7 @@ services:
       - PGPORT=5432                    # Std default port for postgres
 
 
-  client:              #  <== Config details for react client
+  client:              #  <== Config details for react client. Matched with default.conf
     stdin_open: true          # to fix react exit with code 0.
     build:        
       dockerfile: Dockerfile.dev

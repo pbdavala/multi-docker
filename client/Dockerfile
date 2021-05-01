@@ -4,7 +4,7 @@ FROM node:alpine
 #work dir setup in the container. Will be created if does not exist
 WORKDIR '/app'
 
-# Copy only package.json from current workdir "frontend" to the current workdir inside container.
+# Copy only package.json from current workdir "client" to the current workdir inside container.
 COPY ./package.json ./
 
 # Install some dependencies

@@ -3,5 +3,5 @@ WORKDIR "/app"
 COPY ./package.json ./
 RUN npm install
 COPY . .
-# dev  here is from package.json in server folder where it is defiend as nodemon
+# dev  below is from package.json in server folder where it is defiend as nodemon
 CMD ["npm", "run", "dev"]   
