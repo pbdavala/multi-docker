@@ -1,0 +1,8 @@
+# For whatever reason, this one did not stick to WSL style w.r.t client folder counterpart.
+FROM node:16-alpine 
+WORKDIR "/app"
+COPY ./package.json ./
+RUN npm install
+COPY . .
+# dev  below is from package.json in server folder where it is defiend as "nodemon"
+CMD ["npm", "run", "dev"]

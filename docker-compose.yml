@@ -1,0 +1,61 @@
+version: '3'
+services: 
+  postgres:            #  <== Config details for postgres DB container
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+
+  redis:               #  <== Config details for redis container
+    image:  'redis:latest'
+
+  nginx:               #  <== Config details for nginx web server
+    depends_on: 
+      - api
+      - client  
+    restart: always                 # always restart if stopped
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports: 
+      - '3050:80'                   # localhost port : nginx port
+
+
+  api:                 #  <== Config details for express server functionality. Matched with default.conf
+    depends_on: 
+      - postgres
+    build: 
+      dockerfile: Dockerfile.dev   # No need to specify the context here
+      context: ./server            # server is recursed in complex
+    volumes: 
+      - /app/node_modules           # Leave this alone. Don't override. Permanent
+      - ./server:/app               # local path : container path (Copy evertying from server dir into container's app dir)
+    environment: 
+      - REDIS_HOST=redis            # Just specify the name of the service. redis image will take care of everything.
+      - REDIS_PORT=6379             # Std default port for redis from documentation
+      - PGUSER=postgres                # Std default user for postgres  
+      - PGHOST=postgres                # postgres service name above.
+      - PGDATABASE=postgres            # Default DB
+      - PGPASSWORD=postgres_password   # Std default password for postgres
+      - PGPORT=5432                    # Std default port for postgres
+
+
+  client:              #  <== Config details for react client. Matched with default.conf
+    stdin_open: true          # to fix react exit with code 0.
+    build:        
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules           # Leave this alone. Permanent
+      - ./client:/app               # local path : container path
+
+      
+  worker:             #  <== Config details for worker functionality.
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes: 
+        - /app/node_modules
+        - ./worker:/app
+    environment: 
+      - REDIS_HOST=redis            # Just specify the name of the service. redis image will take care of everything.
+      - REDIS_PORT=6379             # Std default port for redis from documentation        

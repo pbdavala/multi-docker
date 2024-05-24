@@ -1,0 +1,5 @@
+# Prod Dockerfile for nginx
+FROM nginx
+# Copy our local default.conf into container's nginx folder's file below
+# Container’s original default.conf if exists, will be overwritten by our file
+COPY ./default.conf /etc/nginx/conf.d/default.conf

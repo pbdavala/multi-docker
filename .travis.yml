@@ -1,0 +1,56 @@
+# sudo access super user acess is required by travis
+sudo: required
+
+# A copy of docker CLI is required
+services:
+  - docker
+
+# Before running the tests or deploy, below are required
+# 1. Build the docker image from Dockerfile.dev and tag it. THis is for testing.
+# Here travis file is a level above client. Hence we are specifying the context path /client below
+before_install:
+  -  docker build -t pdavala/complex-react-test -f ./client/Dockerfile.dev ./client
+
+# Define the scripts to be run to test. Any non-zero exit code below is assumed by travis to be a failure.
+# -- --coverage <- is given to exit instead of watch mode of npm test. 
+script:
+  - docker run -e CI=true pdavala/complex-react-test npm test -- --coverage
+
+# After the success of scripts..  Default Dockerfile is used for prod. build.
+after_success:
+  - docker build -t pdavala/multi-complex-client ./client
+  - docker build -t pdavala/multi-complex-nginx ./nginx
+  - docker build -t pdavala/multi-complex-server ./server
+  - docker build -t pdavala/multi-complex-worker ./worker
+  # Login to Docker CLI. This command first fetches the $DOCKER_PASSWORD from travis-ci env vars. 
+  # And it will provide it as the response (from stdin) for the next command (docker login) 
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push em into docker hub
+  - docker push pdavala/multi-complex-client
+  - docker push pdavala/multi-complex-nginx
+  - docker push pdavala/multi-complex-server
+  - docker push pdavala/multi-complex-worker
+
+
+# Config for deploy to AWS : http://multidockercomplex-env.eba-eyew3rtr.us-east-2.elasticbeanstalk.com/
+# App entry is taken from AWS Elastic beanstalkapplication name : multi-docker-complex
+# Env is taken from AWS app's environment : Multidockercomplex-env
+# AWS S3 bucketname
+# bucket_name is the AWS S3 bucket name for our elstic beanstalk
+# bucket_path is same as app name in AWS
+# deploy only when master branch is updated.
+# The AWS keys added to the travis project https://travis-ci.org/github/pbdavala/multi-docker/settings
+deploy:
+  provider:     elasticbeanstalk
+  region:       "us-east-2"
+  app:          "multi-docker-complex"
+  env:          "Multidockercomplex-env"
+  bucket_name:  "elasticbeanstalk-us-east-2-236818191254"
+  bucket_path:  "multi-docker-complex"
+  on:
+    branch: master
+  access_key_id:  $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+
+
+#End of file..
