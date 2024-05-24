@@ -18,18 +18,18 @@ script:
 
 # After the success of scripts..  Default Dockerfile is used for prod. build.
 after_success:
-  - docker build -t pdavala/multi-complex-client ./client
-  - docker build -t pdavala/multi-complex-nginx ./nginx
-  - docker build -t pdavala/multi-complex-server ./server
-  - docker build -t pdavala/multi-complex-worker ./worker
+  - docker build -t pdavala/multi-docker-complex-client ./client
+  - docker build -t pdavala/multi-docker-complex-nginx ./nginx
+  - docker build -t pdavala/multi-docker-complex-server ./server
+  - docker build -t pdavala/multi-docker-complex-worker ./worker
   # Login to Docker CLI. This command first fetches the $DOCKER_PASSWORD from travis-ci env vars. 
   # And it will provide it as the response (from stdin) for the next command (docker login) 
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push em into docker hub
-  - docker push pdavala/multi-complex-client
-  - docker push pdavala/multi-complex-nginx
-  - docker push pdavala/multi-complex-server
-  - docker push pdavala/multi-complex-worker
+  - docker push pdavala/multi-docker-complex-client
+  - docker push pdavala/multi-docker-complex-nginx
+  - docker push pdavala/multi-docker-complex-server
+  - docker push pdavala/multi-docker-complex-worker
 
 
 # Config for deploy to AWS : http://multidockercomplex-env.eba-eyew3rtr.us-east-2.elasticbeanstalk.com/
